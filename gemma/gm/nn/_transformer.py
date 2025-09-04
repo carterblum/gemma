@@ -122,6 +122,7 @@ class Transformer(nn.Module):
     self.blocks = [
         _modules.Block(
             name=f'layer_{i}',
+            layer=i,
             num_heads=self.config.num_heads,
             num_kv_heads=self.config.num_kv_heads,
             embed_dim=self.config.embed_dim,
@@ -167,14 +168,14 @@ class Transformer(nn.Module):
       return self.config.vision_encoder
 
   # Calling `model.apply` on Colab makes the Kernel crash unless it is jitted.
-  @functools.partial(
-      nn.jit,
-      static_argnames=(
-          'self',
-          'return_last_only',
-          'return_hidden_states',
-      ),
-  )
+  # @functools.partial(
+  #     nn.jit,
+  #     static_argnames=(
+  #         'self',
+  #         'return_last_only',
+  #         'return_hidden_states',
+  #     ),
+  # )
   # The function accepts/returns aribtrary batch shape, but inside the
   # function, the batch dimension is flattened to a single dimension.
   @_jax_utils.flatten_unflatten_batch_dim()
